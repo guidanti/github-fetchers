@@ -1,5 +1,16 @@
 # @guidanti/backstage-github-discussions-fetcher
 
+## 0.7.0
+
+### Minor Changes
+
+- 812a94a: Bump effection to alpha.5
+
+### Patch Changes
+
+- Updated dependencies [812a94a]
+  - github-discussions-fetcher@0.11.0
+
 ## 0.6.0
 
 ### Minor Changes

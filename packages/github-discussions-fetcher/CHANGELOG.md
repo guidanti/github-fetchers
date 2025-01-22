@@ -1,5 +1,11 @@
 # github-discussions-fetcher
 
+## 0.11.0
+
+### Minor Changes
+
+- 812a94a: Bump effection to alpha.5
+
 ## 0.10.0
 
 ### Minor Changes
