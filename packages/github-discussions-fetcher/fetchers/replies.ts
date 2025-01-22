@@ -1,4 +1,4 @@
-import { each, type Operation } from "npm:effection@4.0.0-alpha.3";
+import { each, type Operation } from "npm:effection@4.0.0-alpha.5";
 import { useGraphQL } from "../lib/useGraphQL.ts";
 import { useCache } from "../lib/useCache.ts";
 import { writeReply } from "../lib/entries.ts";

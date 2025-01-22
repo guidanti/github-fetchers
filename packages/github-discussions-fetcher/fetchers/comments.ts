@@ -1,4 +1,4 @@
-import { type Operation } from "npm:effection@4.0.0-alpha.3";
+import { type Operation } from "npm:effection@4.0.0-alpha.5";
 import { useGraphQL } from "../lib/useGraphQL.ts";
 import { Cursor } from "../types.ts";
 import chalk from "npm:chalk@4.1.2";

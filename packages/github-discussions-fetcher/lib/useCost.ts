@@ -1,4 +1,4 @@
-import { createContext, Operation } from "npm:effection@4.0.0-alpha.3";
+import { createContext, Operation } from "npm:effection@4.0.0-alpha.5";
 import { ensureContext } from "./ensureContext.ts";
 
 interface CostEntries {

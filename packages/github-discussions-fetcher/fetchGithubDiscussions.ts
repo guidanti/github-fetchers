@@ -1,4 +1,4 @@
-import { type Operation, type Queue } from "npm:effection@4.0.0-alpha.3";
+import { type Operation, type Queue } from "npm:effection@4.0.0-alpha.5";
 import { fetchDiscussions } from "./fetchers/discussion.ts";
 import { initCacheContext } from "./lib/useCache.ts";
 import { GithubGraphqlClient, initGraphQLContext } from "./lib/useGraphQL.ts";

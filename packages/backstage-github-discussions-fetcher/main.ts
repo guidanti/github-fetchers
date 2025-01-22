@@ -3,7 +3,7 @@ import {
   each,
   main,
   stream,
-} from "npm:effection@4.0.0-alpha.3";
+} from "npm:effection@4.0.0-alpha.5";
 import { createGithubGraphqlClient } from "github-discussions-fetcher";
 import { fetchDiscussionDocuments } from './lib/fetchDiscussionDocuments.ts';
 
