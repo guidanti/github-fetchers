@@ -9,7 +9,7 @@ import {
   spawn,
   type Stream,
   stream,
-} from "npm:effection@4.0.0-alpha.3";
+} from "npm:effection@4.0.0-alpha.5";
 import fs from "node:fs";
 import { promisify } from "node:util";
 

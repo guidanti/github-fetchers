@@ -3,7 +3,7 @@ import {
   Operation,
   race,
   sleep,
-} from "npm:effection@4.0.0-alpha.3";
+} from "npm:effection@4.0.0-alpha.5";
 import { useLogger } from "./useLogger.ts";
 import { ensureContext } from "./ensureContext.ts";
 import prettyMilliseconds from "npm:pretty-ms@7.0.1";

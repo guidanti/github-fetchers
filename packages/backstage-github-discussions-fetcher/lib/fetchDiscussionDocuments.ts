@@ -4,7 +4,7 @@ import {
   type Operation,
   spawn,
   suspend,
-} from 'npm:effection@4.0.0-alpha.3';
+} from 'npm:effection@4.0.0-alpha.5';
 import {
   fetchGithubDiscussions,
   type GithubDiscussionFetcherResult,

@@ -1,5 +1,5 @@
 import { assert } from "jsr:@std/assert@1.0.3";
-import { type Operation } from "npm:effection@4.0.0-alpha.3";
+import { type Operation } from "npm:effection@4.0.0-alpha.5";
 import type { DiscussionsQuery } from "../__generated__/types.ts";
 import { writeComment, writeDiscussion } from "../lib/entries.ts";
 import { useGraphQL } from "../lib/useGraphQL.ts";
