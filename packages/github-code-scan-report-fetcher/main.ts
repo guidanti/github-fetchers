@@ -1,7 +1,7 @@
 import { parse } from "jsr:@std/yaml@1.0.5";
 import { assert } from "jsr:@std/assert";
 import { main, call, stream, each } from "npm:effection@4.0.0-alpha.5";
-import { App } from "npm:octokit@4.1.0";
+import { App, RequestError } from "npm:octokit@4.1.0";
 
 interface GitHubApp {
   appId: number;
@@ -50,6 +50,43 @@ if (import.meta.main) {
       );
 
       console.log(repo, commit);
+
+      try {
+        const { data: analyses } = yield* call(() =>
+          octokit.rest.codeScanning.listRecentAnalyses({
+            owner,
+            repo,
+            headers: {
+              'X-GitHub-Api-Version': '2022-11-28'
+            },
+            ref: default_branch,
+          })
+        );
+
+        const analysesOfLastCommit = analyses.filter(
+          analysis => analysis.commit_sha === commit
+        );
+
+        console.log(`fetched ${analyses.length} analyses, ${analysesOfLastCommit.length} are associated to the latest commit`);
+
+        const { data: alerts } = yield* call(() =>
+          octokit.rest.codeScanning.listAlertsForRepo({
+            owner,
+            repo,
+            headers: {
+              'X-GitHub-Api-Version': '2022-11-28'
+            },
+            ref: default_branch,
+          })
+        );
+
+        console.log(alerts);
+      } catch(e) {
+        if (e instanceof RequestError) {
+          console.log("Skipping", repo);
+          console.error(e?.response?.data);
+        }
+      }
 
       yield* each.next();
     }
