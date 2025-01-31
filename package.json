@@ -8,5 +8,9 @@
   "workspaces": [
     "packages/backstage-github-discussions-fetcher",
     "packages/github-discussions-fetcher"
-  ]
+  ],
+  "devDependencies": {
+    "@microsoft/eslint-formatter-sarif": "^3.1.0",
+    "eslint": "^9.19.0"
+  }
 }
