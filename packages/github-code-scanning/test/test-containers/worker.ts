@@ -2,6 +2,8 @@ import { workerMain } from "jsr:@effection-contrib/worker@0.1.0";
 import { registry, WorkerSend } from "./types.ts";
 import "../promise.ts";
 import { type StartedTestContainer } from "testcontainers";
+import { all } from "effection";
+import { type StartedMinioContainer } from "@testcontainers/minio";
 
 await workerMain<WorkerSend, unknown, unknown, unknown>(
   function* ({ messages }) {
@@ -28,11 +30,43 @@ await workerMain<WorkerSend, unknown, unknown, unknown>(
         }
         case "stop": {
           const container = containers.get(message.container);
-          if (container) {
-            console.log("Closing container in the worker")
-            yield* container.stop();
+          if (!container) throw new Error(`Container was not found ${message.container}`);
+          yield* container.stop();
+          break;
+        }
+        case "copy": {
+          const container = containers.get(message.container);
+          if (!container) throw new Error(`Container was not found ${message.container}`);
+          const ops = [];
+          if (message.directories) {
+            ops.push(container.copyDirectoriesToContainer(message.directories))
+          }
+          if (message.files) {
+            ops.push(container.copyDirectoriesToContainer(message.files))
+          }
+          yield* all(ops);
+          break;
+        }
+        case "getPorts": {
+          if (message.container === "minio") {
+            const container = containers.get(message.container) as StartedMinioContainer | undefined;
+            if (!container) throw new Error(`Container was not found ${message.container}`);
+            return {
+              type: "ports",
+              container: message.container,
+              api: container.getPort(),
+              ui: container.getUiPort(),
+            }
           }
           break;
+        }
+        case "getHost": {
+          const container = containers.get(message.container) as StartedMinioContainer | undefined;
+          if (!container) throw new Error(`Container was not found ${message.container}`);
+          return {
+            type: "host",
+            host: container.getHost()
+          }
         }
         default: {
           // @ts-expect-error Property 'type' does not exist on type 'never'.deno-ts(2339)[]
