@@ -31,25 +31,16 @@ if (import.meta.main) {
       privateKey: githubApp.privateKey,
     });
 
+    app.octokit.rest.repos
+
     for (const { octokit, repository } of yield* each(
       stream(app.eachRepository.iterator())
     )) {
       const {
-        default_branch,
+        // default_branch,
         name: repo,
         owner: { login: owner },
       } = repository;
-
-      const { data: { sha: commit } } = yield* call(() =>
-        octokit.rest.repos.getCommit({
-          owner,
-          repo,
-          ref: default_branch,
-          per_page: 1,
-        })
-      );
-
-      console.log(repo, commit);
 
       try {
         const { data: analyses } = yield* call(() =>
@@ -59,7 +50,18 @@ if (import.meta.main) {
             headers: {
               'X-GitHub-Api-Version': '2022-11-28'
             },
-            ref: default_branch,
+            // ref: default_branch,
+            ref: "mk/reports",
+          })
+        );
+
+        const { data: { sha: commit } } = yield* call(() =>
+          octokit.rest.repos.getCommit({
+            owner,
+            repo,
+            // ref: default_branch,
+            ref: "mk/reports",
+            per_page: 1,
           })
         );
 
@@ -69,18 +71,36 @@ if (import.meta.main) {
 
         console.log(`fetched ${analyses.length} analyses, ${analysesOfLastCommit.length} are associated to the latest commit`);
 
-        const { data: alerts } = yield* call(() =>
-          octokit.rest.codeScanning.listAlertsForRepo({
+        for (const { id: analysis_id } of analysesOfLastCommit) {
+          const { data: analysis } = yield* call(() => octokit.rest.codeScanning.getAnalysis({
             owner,
             repo,
+            analysis_id,
             headers: {
-              'X-GitHub-Api-Version': '2022-11-28'
+              accept: "application/sarif+json",
             },
-            ref: default_branch,
-          })
-        );
+          }));
 
-        console.log(alerts);
+          if (analysis instanceof ArrayBuffer) {
+            const filePath = new URL(`../../${repo}-${analysis_id}.sarif`, import.meta.url);
+            yield* call(() => Deno.writeFile(filePath, new Uint8Array(analysis)));
+            console.log(`Analysis written to ${filePath}`);
+          }
+        }
+
+        // const { data: alerts } = yield* call(() =>
+        //   octokit.rest.codeScanning.listAlertsForRepo({
+        //     owner,
+        //     repo,
+        //     headers: {
+        //       'X-GitHub-Api-Version': '2022-11-28'
+        //     },
+        //     // ref: default_branch,
+        //     ref: "mk/reports",
+        //   })
+        // );
+
+        // console.log(alerts);
       } catch(e) {
         if (e instanceof RequestError) {
           console.log("Skipping", repo);
