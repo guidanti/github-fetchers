@@ -37,7 +37,7 @@ if (import.meta.main) {
       stream(app.eachRepository.iterator())
     )) {
       const {
-        // default_branch,
+        default_branch,
         name: repo,
         owner: { login: owner },
       } = repository;
@@ -50,8 +50,7 @@ if (import.meta.main) {
             headers: {
               'X-GitHub-Api-Version': '2022-11-28'
             },
-            // ref: default_branch,
-            ref: "mk/reports",
+            ref: default_branch,
           })
         );
 
@@ -59,8 +58,7 @@ if (import.meta.main) {
           octokit.rest.repos.getCommit({
             owner,
             repo,
-            // ref: default_branch,
-            ref: "mk/reports",
+            ref: default_branch,
             per_page: 1,
           })
         );
@@ -87,20 +85,6 @@ if (import.meta.main) {
             console.log(`Analysis written to ${filePath}`);
           }
         }
-
-        // const { data: alerts } = yield* call(() =>
-        //   octokit.rest.codeScanning.listAlertsForRepo({
-        //     owner,
-        //     repo,
-        //     headers: {
-        //       'X-GitHub-Api-Version': '2022-11-28'
-        //     },
-        //     // ref: default_branch,
-        //     ref: "mk/reports",
-        //   })
-        // );
-
-        // console.log(alerts);
       } catch(e) {
         if (e instanceof RequestError) {
           console.log("Skipping", repo);
