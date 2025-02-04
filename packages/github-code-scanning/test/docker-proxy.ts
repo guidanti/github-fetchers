@@ -1,23 +1,7 @@
-import { workerMain } from "jsr:@effection-contrib/worker@0.1.0";
-import { all, each, resource, spawn, stream, sleep } from "effection";
+import { all, each, resource, spawn, stream } from "effection";
 import * as io from "jsr:@std/io@0.225";
 import "./promise.ts"
-import { ClientRequest } from "node:http";
 
-const originalSocket = ClientRequest.prototype.onSocket;
-ClientRequest.prototype.onSocket = function (socket) {
-  socket.unref = function () {
-    return this;
-  };
-  return originalSocket.call(this, socket);
-};
-
-if (import.meta.main) {
-  await workerMain<unknown, unknown, unknown, number>(function*({ data }) {
-    yield* startDockerProxy(data);
-    yield* sleep(10000);
-  });
-}
 
 export function startDockerProxy(port: number = 0) {
   return resource<Deno.TcpListener>(function* (provide) {
