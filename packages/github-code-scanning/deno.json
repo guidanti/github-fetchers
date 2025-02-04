@@ -1,0 +1,14 @@
+{
+  "tasks": {
+    "dev": "deno run --watch main.ts"
+  },
+  "imports": {
+    "@aws-sdk/client-s3": "npm:@aws-sdk/client-s3@3.735.0",
+    "effection": "npm:effection@4.0.0-alpha.5",
+    "@std/testing": "jsr:@std/testing@1",
+    "@std/expect": "jsr:@std/expect@1",
+    "@testcontainers/minio": "npm:@testcontainers/minio@10.17.2",
+    "testcontainers": "npm:testcontainers@10.17.2",
+    "@std/dotenv": "jsr:@std/dotenv@0.225.3"
+  }
+}

@@ -1,3 +1,6 @@
 {
-  "nodeModulesDir": "auto"
+  "nodeModulesDir": "auto",
+  "workspace": [
+    "./packages/github-code-scanning"
+  ]
 }

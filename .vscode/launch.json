@@ -6,14 +6,15 @@
   "configurations": [
     {
       "request": "launch",
-      "name": "Launch Program",
+      "name": "Deno Test",
       "type": "node",
-      "program": "${workspaceFolder}/main.ts",
       "cwd": "${workspaceFolder}",
-      "env": {},
-      "runtimeExecutable": "/Users/tarasmankovski/.deno/bin/deno",
+      "env": {
+        "DEBUG": "testcontainers*"
+      },
+      "runtimeExecutable": "deno",
       "runtimeArgs": [
-        "run",
+        "test",
         "--unstable",
         "--inspect-wait",
         "--allow-all"
