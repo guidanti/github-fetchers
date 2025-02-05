@@ -4,11 +4,12 @@ import { initS3Client } from "./lib/s3.ts";
 
 // Learn more at https://docs.deno.com/runtime/manual/examples/module_metadata#concepts
 if (import.meta.main) {
-  await main(function*() {
-
+  await main(function* () {
     const tls = Deno.env.get("S3_USE_SSL") === "false" ? false : true;
-    const endpoint = `${tls ? "https" : "http"}://${Deno.env.get("S3_ENDPOINT")}/` 
-  
+    const endpoint = `${tls ? "https" : "http"}://${
+      Deno.env.get("S3_ENDPOINT")
+    }/`;
+
     const config: S3ClientConfig = {
       region: Deno.env.get("S3_REGION"),
       endpoint,
@@ -16,11 +17,10 @@ if (import.meta.main) {
       tls,
       credentials: {
         accessKeyId: Deno.env.get("S3_ACCESS_KEY_ID") ?? "",
-        secretAccessKey: Deno.env.get("S3_SECRET_KEY") ?? ""
+        secretAccessKey: Deno.env.get("S3_SECRET_KEY") ?? "",
       },
     };
-  
-    yield* initS3Client(config);
 
+    yield* initS3Client(config);
   });
 }

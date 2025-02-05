@@ -1,7 +1,6 @@
 import { all, each, resource, spawn, stream } from "effection";
 import * as io from "jsr:@std/io@0.225";
-import "./promise.ts"
-
+import "./promise.ts";
 
 export function startDockerProxy(port: number = 0) {
   return resource<Deno.TcpListener>(function* (provide) {
@@ -59,4 +58,3 @@ export function startDockerProxy(port: number = 0) {
     }
   });
 }
-

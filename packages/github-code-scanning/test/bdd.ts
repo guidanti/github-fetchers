@@ -37,7 +37,7 @@ export function beforeAll(op: () => Operation<void>): void {
     if (!scope) {
       scope = createTestScope();
     }
-    scope!.addSetup(op)
+    scope!.addSetup(op);
   });
 }
 

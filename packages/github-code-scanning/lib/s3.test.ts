@@ -3,7 +3,10 @@ import { expect } from "@std/expect";
 import { createContext } from "effection";
 
 import { beforeAll, describe, it } from "../test/bdd.ts";
-import { createAccessKey, createBucket } from "../test/test-containers/minio.ts";
+import {
+  createAccessKey,
+  createBucket,
+} from "../test/test-containers/minio.ts";
 import { useTestContainers } from "../test/test-containers/test-containers.ts";
 import { TestContainer } from "../test/test-containers/types.ts";
 import { getObject, initS3Client, putObject } from "./s3.ts";
@@ -49,10 +52,10 @@ describe("s3", () => {
     const { accessKey, secretKey } = yield* createAccessKey(minio, {
       username,
       password,
-      host: internal
+      host: internal,
     });
 
-    yield* createBucket(minio, { host: internal, bucket })
+    yield* createBucket(minio, { host: internal, bucket });
 
     const ports = yield* minio.getPorts();
     const host = yield* minio.getHost();
@@ -80,8 +83,8 @@ describe("s3", () => {
 
     const result = yield* getObject({
       Bucket: bucket,
-      Key: "bar"
-    })
+      Key: "bar",
+    });
 
     expect(yield* result.Body!.transformToString()).toBe("foo");
 

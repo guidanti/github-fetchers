@@ -22,68 +22,86 @@ await workerMain<WorkerSend, unknown, unknown, unknown>(
             containers.set(message.container, started);
             return {
               type: "started",
-              connectionUrl: started.getConnectionUrl()
-            }
+              connectionUrl: started.getConnectionUrl(),
+            };
           } else {
             throw new Error(`GenericContainer is not yet implemented`);
           }
         }
         case "stop": {
           const container = containers.get(message.container);
-          if (!container) throw new Error(`Container was not found ${message.container}`);
+          if (!container) {
+            throw new Error(`Container was not found ${message.container}`);
+          }
           yield* container.stop();
           break;
         }
         case "copy": {
           const container = containers.get(message.container);
-          if (!container) throw new Error(`Container was not found ${message.container}`);
+          if (!container) {
+            throw new Error(`Container was not found ${message.container}`);
+          }
           const ops = [];
           if (message.directories) {
-            ops.push(container.copyDirectoriesToContainer(message.directories))
+            ops.push(container.copyDirectoriesToContainer(message.directories));
           }
           if (message.files) {
-            ops.push(container.copyDirectoriesToContainer(message.files))
+            ops.push(container.copyDirectoriesToContainer(message.files));
           }
           yield* all(ops);
           break;
         }
         case "getPorts": {
           if (message.container === "minio") {
-            const container = containers.get(message.container) as StartedMinioContainer | undefined;
-            if (!container) throw new Error(`Container was not found ${message.container}`);
+            const container = containers.get(message.container) as
+              | StartedMinioContainer
+              | undefined;
+            if (!container) {
+              throw new Error(`Container was not found ${message.container}`);
+            }
             return {
               type: "ports",
               container: message.container,
               api: container.getPort(),
               ui: container.getUiPort(),
-            }
+            };
           }
           break;
         }
         case "getHost": {
-          const container = containers.get(message.container) as StartedMinioContainer | undefined;
-          if (!container) throw new Error(`Container was not found ${message.container}`);
+          const container = containers.get(message.container) as
+            | StartedMinioContainer
+            | undefined;
+          if (!container) {
+            throw new Error(`Container was not found ${message.container}`);
+          }
           return {
             type: "host",
-            host: container.getHost()
-          }
+            host: container.getHost(),
+          };
         }
         case "exec": {
-          const container = containers.get(message.container) as StartedMinioContainer | undefined;
-          if (!container) throw new Error(`Container was not found ${message.container}`);
+          const container = containers.get(message.container) as
+            | StartedMinioContainer
+            | undefined;
+          if (!container) {
+            throw new Error(`Container was not found ${message.container}`);
+          }
 
-          const result = yield* container.exec(message.command, message.options);
+          const result = yield* container.exec(
+            message.command,
+            message.options,
+          );
 
           return {
             type: "execResult",
-            ...result
-          }
+            ...result,
+          };
         }
         default: {
           // @ts-expect-error Property 'type' does not exist on type 'never'.deno-ts(2339)[]
           throw new Error(`${message.type} is not implemented in the worker`);
         }
-          
       }
     });
   },

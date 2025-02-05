@@ -85,7 +85,7 @@ export function useTestContainers(options?: { debug: boolean }) {
                     type: "exec",
                     container: "minio",
                     command,
-                    options
+                    options,
                   });
 
                   if (response.type === "execResult") {
@@ -93,7 +93,7 @@ export function useTestContainers(options?: { debug: boolean }) {
                   }
 
                   throw new Error(`Expected "execResult" got ${response.type}`);
-                }
+                },
               });
             } else {
               throw new Error(`Was not expecteding ${message.type}`);

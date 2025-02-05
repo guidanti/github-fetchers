@@ -7,7 +7,7 @@ export type FileToCopy = {
 };
 
 export const registry = {
-  minio: "minio/minio:RELEASE.2025-01-20T14-49-07Z"
+  minio: "minio/minio:RELEASE.2025-01-20T14-49-07Z",
 } as const;
 
 export type WorkerSend = {
@@ -30,24 +30,24 @@ export type WorkerSend = {
   type: "getHost";
   container: keyof typeof registry;
 } | {
-  type: "exec",
+  type: "exec";
   container: keyof typeof registry;
   command: string | string[];
-  options: Partial<ExecOptions>
+  options: Partial<ExecOptions>;
 };
 
 type ExecOptions = {
-    workingDir: string;
-    user: string;
-    env: Record<string, string>;
-}
+  workingDir: string;
+  user: string;
+  env: Record<string, string>;
+};
 
 type ExecResult = {
   output: string;
   stdout: string;
   stderr: string;
   exitCode: number;
-}
+};
 
 export type WorkerRecv = {
   type: "started";
@@ -61,24 +61,31 @@ export type WorkerRecv = {
 } | {
   type: "host";
   container: keyof typeof registry;
-  host: string
+  host: string;
 } | {
-  type: "execResult",
+  type: "execResult";
   output: string;
   stdout: string;
   stderr: string;
   exitCode: number;
-}
+};
 
 export interface TestContainer {
   connectionUrl: string;
   stop(): Operation<void>;
-  copy(options: { files?: FileToCopy[], directories?: FileToCopy[] }): Operation<void>;
-  getPorts(): Operation<{api: number, ui: number}>;
+  copy(
+    options: { files?: FileToCopy[]; directories?: FileToCopy[] },
+  ): Operation<void>;
+  getPorts(): Operation<{ api: number; ui: number }>;
   getHost(): Operation<string>;
-  exec(command: string | string[], options?: Partial<ExecOptions>): Operation<ExecResult>
+  exec(
+    command: string | string[],
+    options?: Partial<ExecOptions>,
+  ): Operation<ExecResult>;
 }
 
 export interface TestContainers {
-  startMinio(options?: { username?: string; password?: string; }): Operation<TestContainer>
+  startMinio(
+    options?: { username?: string; password?: string },
+  ): Operation<TestContainer>;
 }
