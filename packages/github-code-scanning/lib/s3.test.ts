@@ -40,35 +40,51 @@ const password = "admin123";
 const internal = "minio";
 const bucket = "appsec";
 
+function* setupS3Bucket(
+  { username, password, internalhost, bucket }: {
+    username: string;
+    password: string;
+    internalhost: string;
+    bucket: string;
+  },
+) {
+  const testcontainers = yield* useTestContainers({ debug: true });
+
+  const minio = yield* testcontainers.startMinio({
+    username,
+    password,
+  });
+
+  const { accessKey, secretKey } = yield* createAccessKey(minio, {
+    username,
+    password,
+    host: internalhost,
+  });
+
+  yield* createBucket(minio, { host: internalhost, bucket });
+
+  const ports = yield* minio.getPorts();
+  const host = yield* minio.getHost();
+
+  const s3config = createS3Config({
+    endpoint: `http://${host}:${ports.api}`,
+    accessKeyId: accessKey,
+    secretAccessKey: secretKey,
+  });
+
+  yield* initS3Client(s3config);
+
+  yield* MinioContainerContext.set(minio);
+}
+
 describe("s3", () => {
   beforeAll(function* () {
-    const testcontainers = yield* useTestContainers({ debug: true });
-
-    const minio = yield* testcontainers.startMinio({
+    yield* setupS3Bucket({
       username,
       password,
+      internalhost: internal,
+      bucket,
     });
-
-    const { accessKey, secretKey } = yield* createAccessKey(minio, {
-      username,
-      password,
-      host: internal,
-    });
-
-    yield* createBucket(minio, { host: internal, bucket });
-
-    const ports = yield* minio.getPorts();
-    const host = yield* minio.getHost();
-
-    const s3config = createS3Config({
-      endpoint: `http://${host}:${ports.api}`,
-      accessKeyId: accessKey,
-      secretAccessKey: secretKey,
-    });
-
-    yield* initS3Client(s3config);
-
-    yield* MinioContainerContext.set(minio);
   });
 
   it("can put object into the storage", function* () {

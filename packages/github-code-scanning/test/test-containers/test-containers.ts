@@ -1,7 +1,6 @@
 import { useWorker } from "jsr:@effection-contrib/worker@0.1.0";
 import { resource } from "effection";
 import {
-  FileToCopy,
   TestContainer,
   TestContainers,
   WorkerRecv,
