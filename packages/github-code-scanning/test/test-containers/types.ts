@@ -29,7 +29,25 @@ export type WorkerSend = {
 } | {
   type: "getHost";
   container: keyof typeof registry;
+} | {
+  type: "exec",
+  container: keyof typeof registry;
+  command: string | string[];
+  options: Partial<ExecOptions>
 };
+
+type ExecOptions = {
+    workingDir: string;
+    user: string;
+    env: Record<string, string>;
+}
+
+type ExecResult = {
+  output: string;
+  stdout: string;
+  stderr: string;
+  exitCode: number;
+}
 
 export type WorkerRecv = {
   type: "started";
@@ -44,14 +62,21 @@ export type WorkerRecv = {
   type: "host";
   container: keyof typeof registry;
   host: string
+} | {
+  type: "execResult",
+  output: string;
+  stdout: string;
+  stderr: string;
+  exitCode: number;
 }
 
 export interface TestContainer {
   connectionUrl: string;
   stop(): Operation<void>;
   copy(options: { files?: FileToCopy[], directories?: FileToCopy[] }): Operation<void>;
-  getPorts(): Operation<{api: number, ui: number}>
-  getHost(): Operation<string>
+  getPorts(): Operation<{api: number, ui: number}>;
+  getHost(): Operation<string>;
+  exec(command: string | string[], options?: Partial<ExecOptions>): Operation<ExecResult>
 }
 
 export interface TestContainers {

@@ -80,6 +80,20 @@ export function useTestContainers(options?: { debug: boolean }) {
 
                   throw new Error(`Expected "host" got ${response.type}`);
                 },
+                *exec(command, options = {}) {
+                  const response = yield* worker.send({
+                    type: "exec",
+                    container: "minio",
+                    command,
+                    options
+                  });
+
+                  if (response.type === "execResult") {
+                    return response;
+                  }
+
+                  throw new Error(`Expected "execResult" got ${response.type}`);
+                }
               });
             } else {
               throw new Error(`Was not expecteding ${message.type}`);

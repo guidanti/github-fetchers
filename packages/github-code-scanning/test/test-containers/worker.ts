@@ -68,6 +68,17 @@ await workerMain<WorkerSend, unknown, unknown, unknown>(
             host: container.getHost()
           }
         }
+        case "exec": {
+          const container = containers.get(message.container) as StartedMinioContainer | undefined;
+          if (!container) throw new Error(`Container was not found ${message.container}`);
+
+          const result = yield* container.exec(message.command, message.options);
+
+          return {
+            type: "execResult",
+            ...result
+          }
+        }
         default: {
           // @ts-expect-error Property 'type' does not exist on type 'never'.deno-ts(2339)[]
           throw new Error(`${message.type} is not implemented in the worker`);

@@ -1,4 +1,7 @@
 import {
+  GetObjectCommand,
+  GetObjectCommandInput,
+  GetObjectCommandOutput,
   HeadObjectCommand,
   HeadObjectCommandInput,
   NotFound,
@@ -8,12 +11,7 @@ import {
   S3Client,
   type S3ClientConfig,
 } from "@aws-sdk/client-s3";
-import {
-  call,
-  createContext,
-  type Operation,
-  resource,
-} from "effection";
+import { call, createContext, type Operation, resource } from "effection";
 
 const S3ClientContext = createContext<S3Client>("s3-client");
 
@@ -45,6 +43,14 @@ export function* putObject(
   const s3 = yield* useS3Client();
 
   return yield* call(() => s3.send(new PutObjectCommand(input)));
+}
+
+export function* getObject(
+  input: GetObjectCommandInput,
+): Operation<GetObjectCommandOutput> {
+  const s3 = yield* useS3Client();
+
+  return yield* call(() => s3.send(new GetObjectCommand(input)));
 }
 
 export function* existsObject(
