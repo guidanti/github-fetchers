@@ -3,7 +3,7 @@ name: Upload SARIF
 on: push
 
 jobs:
-  build:
+  upload:
     runs-on: ubuntu-latest
     permissions:
       security-events: write
@@ -13,3 +13,9 @@ jobs:
         with:
           sarif_file: example_sarifs
           wait-for-processing: true
+      - uses: github/codeql-action/init@v3
+        with:
+          languages: javascript-typescript
+      - uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:javascript-typescript"
