@@ -1,0 +1,25 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: github-fetchers
+  annotations:
+    github.com/project-slug: guidanti/github-fetchers
+spec:
+  type: library
+  owner: guidanti
+  lifecycle: production
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: minkimcello
+spec:
+  memberOf: [guidanti]
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: Guidanti
+spec:
+  type: team
+  children: []
