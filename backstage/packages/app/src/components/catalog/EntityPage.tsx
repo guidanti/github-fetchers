@@ -58,6 +58,11 @@ import {
   EntityKubernetesContent,
   isKubernetesAvailable,
 } from '@backstage/plugin-kubernetes';
+import {
+  EntitySecurityInsightsContent,
+  EntitySecurityInsightsCard,
+  isSecurityInsightsAvailable,
+} from '@roadiehq/backstage-plugin-security-insights';
 
 const techdocsContent = (
   <EntityTechdocsContent>
@@ -142,6 +147,14 @@ const overviewContent = (
     <Grid item md={8} xs={12}>
       <EntityHasSubcomponentsCard variant="gridItem" />
     </Grid>
+
+    <EntitySwitch>
+      <EntitySwitch.Case if={isSecurityInsightsAvailable}>
+        <Grid item md={6}>
+          <EntitySecurityInsightsCard />
+        </Grid>
+      </EntitySwitch.Case>
+    </EntitySwitch>
   </Grid>
 );
 
@@ -241,6 +254,10 @@ const defaultEntityPage = (
 
     <EntityLayout.Route path="/docs" title="Docs">
       {techdocsContent}
+    </EntityLayout.Route>
+
+    <EntityLayout.Route path="/security-insights" title="Security Insights">
+      <EntitySecurityInsightsContent />
     </EntityLayout.Route>
   </EntityLayout>
 );
