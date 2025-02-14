@@ -1,7 +1,16 @@
 import { parse } from "jsr:@std/yaml@1.0.5";
 import { assert } from "jsr:@std/assert";
-import { main, call, stream, each } from "npm:effection@4.0.0-alpha.5";
-import { App, RequestError } from "npm:octokit@4.1.0";
+import {
+  main,
+  call,
+  createQueue,
+  spawn,
+  Operation,
+  Subscription,
+  each,
+} from "npm:effection@4.0.0-alpha.5";
+import { App } from "npm:octokit@4.1.0";
+import { fetchGithubScanReports } from './fetchGithubScanReports.ts';
 
 interface GitHubApp {
   appId: number;
@@ -31,67 +40,30 @@ if (import.meta.main) {
       privateKey: githubApp.privateKey,
     });
 
-    app.octokit.rest.repos
+    const results = createQueue<any, void>(); // 🚨
 
-    for (const { octokit, repository } of yield* each(
-      stream(app.eachRepository.iterator())
-    )) {
-      const {
-        default_branch,
-        name: repo,
-        owner: { login: owner },
-      } = repository;
+    yield* spawn(function* () {
+      yield* fetchGithubScanReports({
+        app,
+        results,
+        logger: console,
+      });
+      results.close();
+    });
 
-      try {
-        const { data: analyses } = yield* call(() =>
-          octokit.rest.codeScanning.listRecentAnalyses({
-            owner,
-            repo,
-            headers: {
-              'X-GitHub-Api-Version': '2022-11-28'
-            },
-            ref: default_branch,
-          })
-        );
+    // deno-lint-ignore require-yield
+    function* createResultsSubscription(): Operation<
+      Subscription<any, void> // 🚨
+    > {
+      return results;
+    }
 
-        const { data: { sha: commit } } = yield* call(() =>
-          octokit.rest.repos.getCommit({
-            owner,
-            repo,
-            ref: default_branch,
-            per_page: 1,
-          })
-        );
-
-        const analysesOfLastCommit = analyses.filter(
-          analysis => analysis.commit_sha === commit
-        );
-
-        console.log(`fetched ${analyses.length} analyses, ${analysesOfLastCommit.length} are associated to the latest commit`);
-
-        for (const { id: analysis_id } of analysesOfLastCommit) {
-          const { data: analysis } = yield* call(() => octokit.rest.codeScanning.getAnalysis({
-            owner,
-            repo,
-            analysis_id,
-            headers: {
-              accept: "application/sarif+json",
-            },
-          }));
-
-          if (analysis instanceof ArrayBuffer) {
-            const filePath = new URL(`../../${repo}-${analysis_id}.sarif`, import.meta.url);
-            yield* call(() => Deno.writeFile(filePath, new Uint8Array(analysis)));
-            console.log(`Analysis written to ${filePath}`);
-          }
-        }
-      } catch(e) {
-        if (e instanceof RequestError) {
-          console.log("Skipping", repo);
-          console.error(e?.response?.data);
-        }
-      }
-
+    for (
+      const result of yield* each(
+        createResultsSubscription(),
+      )
+    ) {
+      console.log(result);
       yield* each.next();
     }
   });
