@@ -19,7 +19,7 @@ export const githubCodeScanningPlugin = createBackendPlugin({
       },
       async init({ scheduler }) {
         await scheduler.scheduleTask({
-          frequency: { seconds: 3 },
+          frequency: { seconds: 20 },
           timeout: { seconds: 20 },
           id: 'github-reports',
           fn: async () => { console.log("hello") },
