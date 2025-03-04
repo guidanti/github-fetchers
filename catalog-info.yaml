@@ -1,0 +1,16 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: github-fetchers
+spec:
+  type: service
+  lifecyce: production
+  owner: guidanti
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: guidanti
+spec:
+  type: team
+  children: []
