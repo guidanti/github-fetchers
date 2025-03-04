@@ -4,3 +4,5 @@ __generated__
 .cache*
 build
 .vscode
+github-app.yaml
+notes.md

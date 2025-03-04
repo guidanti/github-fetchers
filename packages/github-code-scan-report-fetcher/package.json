@@ -1,0 +1,14 @@
+{
+  "name": "@guidanti/github-code-scan-report-fetcher",
+  "version": "0.1.0",
+  "author": "Min Kim <min@guidanti.com>",
+  "license": "ISC",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/guidanti/github-fetchers.git"
+  },
+  "bugs": {
+    "url": "https://github.com/guidanti/github-fetchers/issues"
+  }
+}
